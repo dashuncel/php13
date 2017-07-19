@@ -65,11 +65,15 @@ tr {
 .done:before {
     content: "◉";
     color: #1f3c52;
+    cursor: pointer;
+    font-size: 20px;
 }
 
 .undone:before {
     content: "◎";
     color: white;
+    cursor: pointer;
+    font-size: 20px;
 }
 
 [type='button'] {

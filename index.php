@@ -93,7 +93,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
     // обработчик кнопки edit record
     $('.edit').click(function(event){
-        showModal();
+        let desc = showModal();
         let id = event.currentTarget.id;
         $.ajax({
             url: 'edit.php',
@@ -107,11 +107,10 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
     // обработчик кнопки добавление нового дела - модальное окно
     $('[type = "button"]').click(function(event){
-        showModal();
+        let desc = showModal('');
     });
     
-    function showModal() {
-
+    function showModal(desc) {
     }
 
 </script>
