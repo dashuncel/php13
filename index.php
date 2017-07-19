@@ -67,6 +67,16 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
     $('.done, .undone').click(function(event){
         event.preventDefault();
+        let done = (event.currentTarget.classList[0] == "undone") ? "1" : "0";
+        let id = event.currentTarget.id;
+        $.ajax({
+            url: 'update.php',
+            type: 'POST',
+            data: `id=${id}&done=${done}`,
+            success: function(result){
+                $('tbody').html(result);
+            }
+        });
     });
 
     // обработчик кнопки remove/edit
@@ -78,9 +88,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             type: 'POST',
             data: `id=${id}`,
             success: function(result){
-                console.log(result);
-                /*
-                $('tbody').html(result);*/
+                $('tbody').html(result);
             }
         });
     });

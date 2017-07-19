@@ -51,7 +51,7 @@ function prepareTable($query) {
         $a = "<pre><a title='редактировать' href='#' id={$row['id']}><img src='.\img\\ed.png'></a>";
         $a .= "  <a title='удалить' href='#' id={$row['id']}><img src='.\img\drop.png'></a></pre>";
         $str.="<tr>";
-        $str.="<td>{$row['date_added']}</td><td>{$row['description']}</td><td class=$done title=$title></td><td>$a</td>";
+        $str.="<td>{$row['date_added']}</td><td >{$row['description']}</td><td id={$row['id']} class=$done title=$title></td><td>$a</td>";
         $str.="</tr>";
     }
     return $str;
