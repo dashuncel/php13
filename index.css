@@ -17,6 +17,20 @@ table {
     box-shadow: 0 0 .5em #000;
 }
 
+th[data-sort='asc']:after {
+    content: "▽";
+    color: honeydew;
+    padding-left: 20px;
+    font-size: 8px;
+}
+
+[data-sort='desc']:after {
+    content: "△";
+    color: honeydew;
+    padding-left: 20px;
+    font-size: 10px;
+
+}
 
 tbody > tr:nth-child(2n) {
     background: linear-gradient(135deg, burlywood, gray);
