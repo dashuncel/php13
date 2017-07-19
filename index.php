@@ -19,6 +19,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     </form>
     </div>
 </div>
+<input type="button" value="Добавить новое дело" name="add">
 <table>
     <thead><tr>
         <th data-sort="asc" data-col="date_added">Дата</th>
@@ -92,6 +93,15 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             }
         });
     });
+
+    // обработчик кнопки добавление нового дела - модальное окно
+    $('[type = "button"]').click(function(event){
+        showModal();
+    });
+    
+    function showModal() {
+        
+    }
 
 </script>
 </body>
