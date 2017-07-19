@@ -56,9 +56,10 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         $.ajax({
             url: 'sort.php',
             type: 'POST',
-            data: `sort=${desc}&column=${col}]`,
+            data: `sort=${desc}&column=${col}`,
             success: function(result){
-                console.log(result);
+                $('tbody').html(result);
+                event.currentTarget.dataset.sort = (desc == "asc") ? "desc" : "asc";
             }
         });
     });
@@ -71,6 +72,17 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     // обработчик кнопки remove/edit
     $('a').click(function(event){
         event.preventDefault();
+        let id = event.currentTarget.id;
+        $.ajax({
+            url: 'delete.php',
+            type: 'POST',
+            data: `id=${id}`,
+            success: function(result){
+                console.log(result);
+                /*
+                $('tbody').html(result);*/
+            }
+        });
     });
 
 </script>
