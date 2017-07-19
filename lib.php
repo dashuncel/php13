@@ -48,8 +48,8 @@ function prepareTable($query) {
             $title='выполнено';
         }
 
-        $a = "<pre><a title='редактировать' href='#' id={$row['id']}><img src='.\img\\ed.png'></a>";
-        $a .= "  <a title='удалить' href='#' id={$row['id']}><img src='.\img\drop.png'></a></pre>";
+        $a = "<pre><a title='редактировать' href='#' id={$row['id']} class='edit'><img src='.\img\\ed.png'></a>";
+        $a .= "  <a title='удалить' href='#' id={$row['id']} class='del'><img src='.\img\drop.png'></a></pre>";
         $str.="<tr>";
         $str.="<td>{$row['date_added']}</td><td >{$row['description']}</td><td id={$row['id']} class=$done title=$title></td><td>$a</td>";
         $str.="</tr>";

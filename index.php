@@ -34,7 +34,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 <div>
     <dl>
         <dt>Сортировка - </dt>
-        <dd>клик по загловку таблицы</dd>
+        <dd>клик по загловку таблицы, имеющим значок сортировки</dd>
         <dt>Изменение статуса - </dt>
         <dd>клик по ячейке в колонке "Статус"</dd>
         <dt>Редактирование и удаление - </dt>
@@ -53,7 +53,6 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         if (desc === undefined) {
             return;
         }
-        event.preventDefault();
         $.ajax({
             url: 'sort.php',
             type: 'POST',
@@ -67,7 +66,6 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
     // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
     $('.done, .undone').click(function(event){
-        event.preventDefault();
         let done = (event.currentTarget.classList[0] == "undone") ? "1" : "0";
         let id = event.currentTarget.id;
         $.ajax({
@@ -80,14 +78,27 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         });
     });
 
-    // обработчик кнопки remove/edit
-    $('a').click(function(event){
-        event.preventDefault();
+    // обработчик кнопки delete record
+    $('.del').click(function(event){
         let id = event.currentTarget.id;
         $.ajax({
             url: 'delete.php',
             type: 'POST',
             data: `id=${id}`,
+            success: function(result){
+                $('tbody').html(result);
+            }
+        });
+    });
+
+    // обработчик кнопки edit record
+    $('.edit').click(function(event){
+        showModal();
+        let id = event.currentTarget.id;
+        $.ajax({
+            url: 'edit.php',
+            type: 'POST',
+            data: `id=${id}&val=${value}`,
             success: function(result){
                 $('tbody').html(result);
             }
@@ -100,7 +111,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     });
     
     function showModal() {
-        
+
     }
 
 </script>
