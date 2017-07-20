@@ -18,14 +18,14 @@ table {
 }
 
 th[data-sort='asc']:after {
-    content: "▽";
+    content: "△";
     color: honeydew;
     padding-left: 20px;
     font-size: 8px;
 }
 
 [data-sort='desc']:after {
-    content: "△";
+    content: "▽";
     color: honeydew;
     padding-left: 20px;
     font-size: 10px;

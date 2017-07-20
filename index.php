@@ -49,60 +49,61 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         let desc = event.currentTarget.dataset.sort;
         let col = event.currentTarget.dataset.col;
 
-        // если направление сортировки не указано, выходим без запроса:
+        // если направление сортировки на кликнутой колонке не указано, выходим без запроса:
         if (desc === undefined) {
             return;
         }
-        $.ajax({
-            url: 'sort.php',
-            type: 'POST',
-            data: `sort=${desc}&column=${col}`,
-            success: function(result){
-                $('tbody').html(result);
-                event.currentTarget.dataset.sort = (desc == "asc") ? "desc" : "asc";
+
+        // собираем прочие направления сортировки по колонкам:
+        $('[data-sort*="sc"]').each(function (i, val) {
+            if (event.currentTarget != val) {
+                desc += ',' + val.dataset.sort;
+                col += ',' + val.dataset.col;
             }
         });
+        $.post("sort.php",
+                { sort: desc, column : col},
+                function(data, result){
+                     $('tbody').html(data);
+                     event.target.dataset.sort = (event.currentTarget.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
+                }
+        );
     });
 
-    // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
-    $('.done, .undone').click(function(event){
-        let done = (event.currentTarget.classList[0] == "undone") ? "1" : "0";
-        let id = event.currentTarget.id;
-        $.ajax({
-            url: 'update.php',
-            type: 'POST',
-            data: `id=${id}&done=${done}`,
-            success: function(result){
-                $('tbody').html(result);
-            }
-        });
-    });
+    // обработчик клика по таблице (используем всплытие Тк таблицу перерисовываем и теряем обработчики):
+    $('table').click(function(event){
+        // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
+        if (event.target.tagName == 'TD' && (event.target.classList[0] == 'done' || event.target.classList[0] == 'undone')) {
+            let done = (event.target.classList[0] == "undone") ? "1" : "0";
+            let id = event.target.id;
+            $.post("update.php",
+                {id: id, done : done} ,
+                function(data, status) {
+                    $('tbody').html(data);
+                }
+            );
+        }
 
-    // обработчик кнопки delete record
-    $('.del').click(function(event){
-        let id = event.currentTarget.id;
-        $.ajax({
-            url: 'delete.php',
-            type: 'POST',
-            data: `id=${id}`,
-            success: function(result){
-                $('tbody').html(result);
-            }
-        });
-    });
+        if (event.target.tagName == 'IMG' && event.target.parentNode.classList[0] == 'del') {
+            let id = event.target.parentNode.id;
+            $.post("delete.php",
+                   {id : id},
+                   function(data, result){
+                       $('tbody').html(data);
+                   }
+            );
+        }
 
-    // обработчик кнопки edit record
-    $('.edit').click(function(event){
-        let desc = showModal();
-        let id = event.currentTarget.id;
-        $.ajax({
-            url: 'edit.php',
-            type: 'POST',
-            data: `id=${id}&val=${value}`,
-            success: function(result){
-                $('tbody').html(result);
-            }
-        });
+        if (event.target.tagName == 'A' && event.target.classList[0] == 'edit') {
+            let id = event.target.id;
+            let description = showModal();
+            $.post("update.php",
+                {id : id, description: description},
+                function(data, result){
+                    $('tbody').html(data);
+                }
+            );
+        }
     });
 
     // обработчик кнопки добавление нового дела - модальное окно
