@@ -49,11 +49,18 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 </div>
 <script type="text/javascript">
     'use strict';
+    let desc; // направления сортировки колонок
+    let col;  // колонки для сортировки
+
+    // устанавливаем переменные сортировки таблицы:
+    $(document).ready(
+        setSort();
+    )
 
     // обработчик клика на заголовке таблицы (сортировка):
     $('th').click(function(event){
-        let desc = event.currentTarget.dataset.sort;
-        let col = event.currentTarget.dataset.col;
+        desc = event.currentTarget.dataset.sort;
+        col = event.currentTarget.dataset.col;
 
         // если направление сортировки на кликнутой колонке не указано, выходим без запроса:
         if (desc === undefined) {
@@ -62,28 +69,30 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
         // собираем прочие направления сортировки по колонкам:
         $('[data-sort*="sc"]').each(function (i, val) {
-            if (event.currentTarget != val) {
-                desc += ',' + val.dataset.sort;
-                col += ',' + val.dataset.col;
+                    if (event.currentTarget != val) {
+                        desc += ',' + val.dataset.sort;
+                        col += ',' + val.dataset.col;
             }
         });
-        $.post("sort.php",
-                { sort: desc, column : col},
+        $.post("query.php",
+                { typeQuery: "sort", sort: desc, column : col},
                 function(data, result){
                      $('tbody').html(data);
                      event.target.dataset.sort = (event.currentTarget.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
+                     setSort(); // пересобираем переменные сортировки таблицы
                 }
         );
     });
 
-    // обработчик клика по таблице (используем всплытие Тк таблицу перерисовываем и теряем обработчики):
+    // обработчик клика по таблице:
     $('table').click(function(event){
+
         // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
         if (event.target.tagName == 'TD' && (event.target.classList[0] == 'done' || event.target.classList[0] == 'undone')) {
             let done = (event.target.classList[0] == "undone") ? "1" : "0";
             let id = event.target.id;
-            $.post("update.php",
-                {id: id, done : done} ,
+            $.post("query.php",
+                { typeQuery: "update", id: id, done : done, sort: desc, column : col} ,
                 function(data, status) {
                     $('tbody').html(data);
                 }
@@ -92,8 +101,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
         if (event.target.tagName == 'IMG' && event.target.parentNode.classList[0] == 'del') {
             let id = event.target.parentNode.id;
-            $.post("delete.php",
-                   {id : id},
+            $.post("query.php",
+                   { typeQuery: "delete", id : id, sort: desc, column : col},
                    function(data, result){
                        $('tbody').html(data);
                    }
@@ -105,8 +114,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             showModal();
             $('.title').text("Редактирование дела");
 
-            $.post("update.php",
-                {id : id, description: description},
+            $.post("query.php",
+                { typeQuery: "update", id : id, description: description, sort: desc, column : col},
                 function(data, result){
                     $('tbody').html(data);
                 }
@@ -122,8 +131,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
     $('.creater').click(function(event) {
         console.log();
-        $.post("create.php",
-            {description: description, date: today},
+        $.post("query.php",
+            {typeQuery: "create", description: description, date: today, sort: desc, column : col},
             function(data, result){
                 $('tbody').html(data);
             }
@@ -133,6 +142,16 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     function showModal(desc) {
         $('.modal-wrapper').toggleClass('open');
         $('.page-wrapper').toggleClass('blur');
+    }
+    
+    function setSort() {
+        desc='';
+        col='';
+
+        $('[data-sort*="sc"]').each(function (i, val) {
+             desc += ',' + val.dataset.sort;
+             col += ',' + val.dataset.col;
+        });
     }
 
 </script>

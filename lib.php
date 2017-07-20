@@ -27,7 +27,7 @@ catch (PDOException $e)
     exit;
 }
 
-// выполняет запрос из параметре и готовит HTML таблицу
+// выполняет запрос из параметра и готовит HTML таблицу
 function prepareTable($query) {
     global $pdo;
     $statement=$pdo->prepare($query);
