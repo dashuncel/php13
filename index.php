@@ -53,9 +53,9 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     let col;  // колонки для сортировки
 
     // устанавливаем переменные сортировки таблицы:
-    $(document).ready(
+    $(document).ready(function() {
         setSort();
-    )
+    })
 
     // обработчик клика на заголовке таблицы (сортировка):
     $('th').click(function(event){

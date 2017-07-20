@@ -24,17 +24,17 @@ $query=''; // текст промежуточного запроса
 // формируем промежуточный запрос:
 switch ($typeQuery) {
     case "delete":
-        $param = [ {$_POST['id']} ];
+        $param = [ $_POST['id'] ];
         $query='delete from tasks where tasks.id = ?';
         break;
     case "update":
         if (isset($_POST['done'])) {
-            $param = [{$_POST['done']}, {$_POST['id']}];
+            $param = [$_POST['done'], $_POST['id']];
             $query = 'update tasks set is_done = ?  where tasks.id = ?';
         }
         else // в данной реализации одновременный update Нескольких полей не предусмотрен
         if (isset($_POST['description'])) {
-            $param = ["{$_POST['description']}", "{$_POST['id']}"];
+            $param = [$_POST['description'], $_POST['id']];
             $query = 'update tasks set description = ?  where tasks.id = ?';
         }
         break;
