@@ -23,22 +23,23 @@ if ($typeQuery == 'delete' || $typeQuery == 'update' )  {
 
 $param=[]; // параметры для запроса, массив
 $query=''; // текст промежуточного запроса
+$validSortOptions=['is_done', 'description', 'add_date'];
 
 // формируем промежуточный запрос:
 switch ($typeQuery) {
     case "delete":
-        $param = [ $id ];
-        $query="delete from tasks where tasks.id = ?";
+        $param = [ "id" => $id ];
+        $query="delete from tasks where tasks.id = :id ";
         break;
     case "update":
         if (isset($_POST['done'])) {
-            $param = [$_POST['done'], $id ];
-            $query = "update tasks set is_done = ?  where tasks.id = ?";
+            $param = [ "done" => $_POST['done'], "id" => $id ];
+            $query = "update tasks set is_done = :done  where tasks.id = :id";
         }
         else // в данной реализации одновременный update Нескольких полей не предусмотрен
         if (isset($_POST['description'])) {
-            $param = [$_POST['description'], $id ];
-            $query = "update tasks set description = ?  where tasks.id = ?";
+            $param = ["desc" => $_POST['description'], "id" => $id ];
+            $query = "update tasks set description = :desc where tasks.id = :id";
         }
         break;
     case "create":
@@ -56,13 +57,14 @@ if (isset($query)) {
     }
 }
 
-// утанавливаем сортировку, если задана:
+// утанавливаем сортировку, если условия сортировки заданы:
 $query = $mainQuery;
 if (isset($_POST['sort']) && isset($_POST['column'])) {
     $query .= ' ORDER BY ';
     $asc = explode(',', $_POST['sort']);
     $col = explode(',', $_POST['column']);
     foreach ($asc as $key => $item) {
+        if (! in_array($col[$key], $validSortOptions)) { continue; }
         $query .= $col[$key] . ' ' . $item;
         if ($key < count($asc) - 1) {
             $query .= ',';
