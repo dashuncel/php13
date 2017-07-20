@@ -13,13 +13,18 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 <body>
 <div class="modal-wrapper">
     <div class="modal">
-    <form>
-        <label>Описание дела:<input type="text"></label>
-        <input type="submit" value="Сохранить">
-    </form>
+        <div class="head">
+            <a class="btn-close trigger" href='#'></a>
+            <div class="title"></div>
+        </div>
+        <form>
+            <textarea name="desc" rows="4" cols="75" placeholder="Описание дела"></textarea>
+            <input type="button" value="Сохранить" class="trigger creater">
+        </form>
     </div>
 </div>
-<input type="button" value="Добавить новое дело" name="add">
+<div class="page-wrapper">
+<input type="button" class="trigger" value="Добавить новое дело" name="add">
 <table>
     <thead><tr>
         <th data-sort="asc" data-col="date_added">Дата</th>
@@ -40,6 +45,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         <dt>Редактирование и удаление - </dt>
         <dd>клик по кнопке в колонке "Действия"</dd>
     </dl>
+</div>
 </div>
 <script type="text/javascript">
     'use strict';
@@ -94,9 +100,11 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             );
         }
 
-        if (event.target.tagName == 'A' && event.target.classList[0] == 'edit') {
-            let id = event.target.id;
-            let description = showModal();
+        if (event.target.tagName == 'IMG' && event.target.parentNode.classList[0] == 'edit') {
+            let id = event.target.parentNode.id;
+            showModal();
+            $('.title').text("Редактирование дела");
+
             $.post("update.php",
                 {id : id, description: description},
                 function(data, result){
@@ -107,11 +115,24 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     });
 
     // обработчик кнопки добавление нового дела - модальное окно
-    $('[type = "button"]').click(function(event){
-        let desc = showModal('');
+    $('.trigger').click(function(event){
+        showModal();
+        $('.title').text("Добавление нового дела");
+    });
+
+    $('.creater').click(function(event) {
+        console.log();
+        $.post("create.php",
+            {description: description, date: today},
+            function(data, result){
+                $('tbody').html(data);
+            }
+        );
     });
     
     function showModal(desc) {
+        $('.modal-wrapper').toggleClass('open');
+        $('.page-wrapper').toggleClass('blur');
     }
 
 </script>

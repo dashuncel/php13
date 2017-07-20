@@ -29,7 +29,6 @@ th[data-sort='asc']:after {
     color: honeydew;
     padding-left: 20px;
     font-size: 10px;
-
 }
 
 tbody > tr:nth-child(2n) {
@@ -86,7 +85,7 @@ tr {
     background: linear-gradient(burlywood, gray) #E38916;
     transition: 0.2s;
     height: 50px;
-    margin: 20px;
+    margin: 5px;
 
     border-style: solid none;
     border-color: #FDBE33 #000 slategrey  ;
@@ -115,7 +114,7 @@ tr {
     height:100%;
     position:fixed;
     top:0; left:0;
-    background:rgba(255,257,153,0.75);
+    background: gray;
     visibility:hidden;
     opacity:0;
     -webkit-transition: all 0.25s ease-in-out;
@@ -136,7 +135,7 @@ tr {
     margin:50% 0 0 -300px;
     position:relative;
     top:50%; left:50%;
-    background:#fff;
+    background: burlywood;
     opacity:0;
     -webkit-transition: all 0.5s ease-in-out;
     -moz-transition: all 0.5s ease-in-out;
@@ -149,3 +148,56 @@ tr {
     margin-top:-150px;
     opacity:1;
 }
+
+
+.btn-close{
+    width:32px;
+    height:32px;
+    display:block;
+    float:right;
+}
+
+.btn-close::before, .btn-close::after{
+    content:'';
+    width:32px;
+    height:6px;
+    display:block;
+    background:#fff;
+}
+
+.btn-close::before{
+    margin-top:12px;
+    -webkit-transform:rotate(45deg);
+    -moz-transform:rotate(45deg);
+    -o-transform:rotate(45deg);
+    transform:rotate(45deg);
+}
+
+.btn-close::after{
+    margin-top:-6px;
+    -webkit-transform:rotate(-45deg);
+    -moz-transform:rotate(-45deg);
+    -o-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+}
+
+.head{
+    width:90%;
+    height:32px;
+    padding:1.5em 5%;
+    overflow:hidden;
+    background: darkgoldenrod;
+    font-family: Arial;
+    color: #fff;
+    font-size: 2em;
+}
+
+form {
+    margin : 20px;
+}
+
+textarea {
+    border-radius: .5em;
+    background-color : lightgrey;
+}
+
