@@ -51,6 +51,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     'use strict';
     let desc; // направления сортировки колонок
     let col;  // колонки для сортировки
+    let description; // описание текущего дела
 
     // устанавливаем переменные сортировки таблицы:
     $(document).ready(function() {
@@ -130,7 +131,6 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     });
 
     $('.creater').click(function(event) {
-        console.log();
         $.post("query.php",
             {typeQuery: "create", description: description, date: today, sort: desc, column : col},
             function(data, result){
