@@ -57,7 +57,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     // устанавливаем переменные сортировки таблицы:
     $(document).ready(function() {
         setSort();
-    })
+    });
 
     // обработчик клика на заголовке таблицы (сортировка):
     $('th').click(function(event){
@@ -80,7 +80,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
                 { typeQuery: "sort", sort: desc, column : col},
                 function(data, result){
                     setData(data);
-                    event.target.dataset.sort = (event.currentTarget.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
+                    event.target.dataset.sort = (event.target.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
                 }
         );
     });
@@ -105,7 +105,7 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             $.post("query.php",
                  {typeQuery: "delete", id : id},
                  function(data, result) {
-                    setData(data);
+                     $('tbody').html(data); //тут так, т.к. когда удаляем последннюю, виджет не обновляется :((
                  }
             );
         }
@@ -123,15 +123,19 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
 
     // обработчик элементов, изменяющих статус модального окна (3 штуки - закрыть, добавить, сохранить)
     $('.trigger').click(function(event){
+console.log(event);
         showModal();
     });
 
     //
     $('.adder').click(function(event) {
+        console.log(event);
+
         $('.title').text("Добавление нового дела");
         $('textarea').val('');
         typeQuery = 'create';
         id = '';
+
     });
 
     $('.creater').click(function(event) {

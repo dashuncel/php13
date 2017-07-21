@@ -3,9 +3,15 @@
 require_once 'mydata.php';
 
 $host='localhost';
+
 $user=LOGIN;
 $password=PASSWD;
+$database='byankina';
+/*
+$user='root';
+$password='';
 $database='global';
+*/
 $dbport=3306;
 $mainQuery="SELECT * FROM tasks ";
 
@@ -40,7 +46,7 @@ function prepareTable($query) {
     $rows=$statement->fetchAll();
 
     if (empty($rows) || ! is_array($rows)) {
-        exit;
+        return '';
     }
     $str='';
     foreach ($rows as $row) {
