@@ -15,7 +15,7 @@ if (! isset($_POST['typeQuery'])) {
 }
 $typeQuery = $_POST['typeQuery'];
 if ($typeQuery == 'delete' || $typeQuery == 'update' )  {
-    if (! isset($_POST['id'])) {
+    if (! isset($_POST['id']) || empty($_POST['id'])) {
         exit;
     }
     $id = (int)($_POST['id'] ? : 0);
@@ -24,7 +24,6 @@ if ($typeQuery == 'delete' || $typeQuery == 'update' )  {
 $param=[]; // параметры для запроса, массив
 $query=''; // текст промежуточного запроса
 $validSortOptions=['is_done', 'description', 'add_date'];
-
 // формируем промежуточный запрос:
 switch ($typeQuery) {
     case "delete":
@@ -43,11 +42,17 @@ switch ($typeQuery) {
         }
         break;
     case "create":
+        $date = date("Y-m-d H:i:s");
+        $query = "insert into tasks (description, is_done, date_added) values (:description, :done, :date) ";
+        $param = [$_POST['description'], 0, $date];
         break;
 }
 
-// если есть промежуточный зпрос - выполняем его:
-if (isset($query)) {
+var_dump($param);
+echo $query;
+
+// если есть промежуточный запрос - выполняем его:
+if (! empty($query)) {
     try {
         $statement = $pdo->prepare($query);
         $statement->execute($param);
@@ -59,6 +64,7 @@ if (isset($query)) {
 
 // утанавливаем сортировку, если условия сортировки заданы:
 $query = $mainQuery;
+
 if (isset($_POST['sort']) && isset($_POST['column'])) {
     $query .= ' ORDER BY ';
     $asc = explode(',', $_POST['sort']);
@@ -66,9 +72,7 @@ if (isset($_POST['sort']) && isset($_POST['column'])) {
     foreach ($asc as $key => $item) {
         if (! in_array($col[$key], $validSortOptions)) { continue; }
         $query .= $col[$key] . ' ' . $item;
-        if ($key < count($asc) - 1) {
-            $query .= ',';
-        }
+        if ($key + 1 != count($asc)) {$query .= ','; }
     }
 }
 

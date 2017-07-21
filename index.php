@@ -18,13 +18,13 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
             <div class="title"></div>
         </div>
         <form>
-            <textarea name="desc" rows="4" cols="75" placeholder="Описание дела"></textarea>
+            <textarea name="desc" rows="4" cols="65" placeholder="Описание дела"></textarea>
             <input type="button" value="Сохранить" class="trigger creater">
         </form>
     </div>
 </div>
 <div class="page-wrapper">
-<input type="button" class="trigger" value="Добавить новое дело" name="add">
+<input type="button" class="trigger adder" value="Добавить новое дело" name="add">
 <table>
     <thead><tr>
         <th data-sort="asc" data-col="date_added">Дата</th>
@@ -51,7 +51,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     'use strict';
     let desc; // направления сортировки колонок
     let col;  // колонки для сортировки
-    let description; // описание текущего дела
+    let typeQuery;
+    let id;
 
     // устанавливаем переменные сортировки таблицы:
     $(document).ready(function() {
@@ -78,9 +79,8 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         $.post("query.php",
                 { typeQuery: "sort", sort: desc, column : col},
                 function(data, result){
-                     $('tbody').html(data);
-                     event.target.dataset.sort = (event.currentTarget.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
-                     setSort(); // пересобираем переменные сортировки таблицы
+                    setData(data);
+                    event.target.dataset.sort = (event.currentTarget.dataset.sort == "asc") ? "desc" : "asc"; // меняем направление сортировки
                 }
         );
     });
@@ -91,55 +91,60 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
         // обработчик щелка по колонке с исполненным: изменение статуса "исполнен":
         if (event.target.tagName == 'TD' && (event.target.classList[0] == 'done' || event.target.classList[0] == 'undone')) {
             let done = (event.target.classList[0] == "undone") ? "1" : "0";
-            let id = event.target.id;
+            id = event.target.parentNode.id;
             $.post("query.php",
-                { typeQuery: "update", id: id, done : done, sort: desc, column : col} ,
+                {typeQuery: "update", id: id, done : done} ,
                 function(data, status) {
-                    $('tbody').html(data);
+                    setData(data);
                 }
             );
         }
 
         if (event.target.tagName == 'IMG' && event.target.parentNode.classList[0] == 'del') {
-            let id = event.target.parentNode.id;
+            id = $(event.target).parentsUntil('tbody').last().attr('id');
             $.post("query.php",
-                   { typeQuery: "delete", id : id, sort: desc, column : col},
-                   function(data, result){
-                       $('tbody').html(data);
-                   }
+                 {typeQuery: "delete", id : id},
+                 function(data, result) {
+                    setData(data);
+                 }
             );
         }
 
         if (event.target.tagName == 'IMG' && event.target.parentNode.classList[0] == 'edit') {
-            let id = event.target.parentNode.id;
-            showModal();
+            let trow = $(event.target).parentsUntil('tbody').last(); // выходим на текущую строку
+            id = $(trow).attr('id');
+            let description = $(trow).children(':nth-child(2)').text(); // значение 2 колонки
+            $('textarea').val(description);
             $('.title').text("Редактирование дела");
-
-            $.post("query.php",
-                { typeQuery: "update", id : id, description: description, sort: desc, column : col},
-                function(data, result){
-                    $('tbody').html(data);
-                }
-            );
+            typeQuery = 'update';
+            showModal();
         }
     });
 
-    // обработчик кнопки добавление нового дела - модальное окно
+    // обработчик элементов, изменяющих статус модального окна (3 штуки - закрыть, добавить, сохранить)
     $('.trigger').click(function(event){
         showModal();
+    });
+
+    //
+    $('.adder').click(function(event) {
         $('.title').text("Добавление нового дела");
+        $('textarea').val('');
+        typeQuery = 'create';
+        id = '';
     });
 
     $('.creater').click(function(event) {
+        let desc = $('textarea').val();
         $.post("query.php",
-            {typeQuery: "create", description: description, date: today, sort: desc, column : col},
+            {typeQuery: typeQuery, description: desc, id: id },
             function(data, result){
-                $('tbody').html(data);
+                setData(data);
             }
         );
     });
     
-    function showModal(desc) {
+    function showModal() {
         $('.modal-wrapper').toggleClass('open');
         $('.page-wrapper').toggleClass('blur');
     }
@@ -147,11 +152,18 @@ require_once __DIR__.DIRECTORY_SEPARATOR.'lib.php';
     function setSort() {
         desc='';
         col='';
-
         $('[data-sort*="sc"]').each(function (i, val) {
-             desc += ',' + val.dataset.sort;
-             col += ',' + val.dataset.col;
+            if (desc !== '') {desc += ","; }
+            if (col !== '') {col += ","; }
+            desc += val.dataset.sort;
+            col  += val.dataset.col;
         });
+    }
+
+    function setData(data) {
+        if (data !== 'undefined' && data.length > 0) {
+            $('tbody').html(data);
+        }
     }
 
 </script>
