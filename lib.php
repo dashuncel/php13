@@ -3,10 +3,8 @@
 require_once 'mydata.php';
 
 $host='localhost';
-/*$user=LOGIN;
-$password=PASSWD;*/
-$user='root';
-$password='';
+$user=LOGIN;
+$password=PASSWD;
 $database='global';
 $dbport=3306;
 $mainQuery="SELECT * FROM tasks ";
@@ -30,8 +28,15 @@ catch (PDOException $e)
 // выполняет запрос из параметра и готовит HTML таблицу
 function prepareTable($query) {
     global $pdo;
-    $statement=$pdo->prepare($query);
-    $statement->execute();
+    try {
+        $statement = $pdo->prepare($query);
+        $statement->execute();
+    }
+    catch (PDOException $e) {
+        echo "Ошибка отправки запроса '$query' к БД: ".$e->getMessage().'<br/>';
+        exit;
+    }
+
     $rows=$statement->fetchAll();
 
     if (empty($rows) || ! is_array($rows)) {

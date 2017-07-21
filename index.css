@@ -82,7 +82,7 @@ tr {
     padding: .5em 2em;
     outline: none;
     border-width: 2px 0;
-    background: linear-gradient(burlywood, gray) #E38916;
+    background: linear-gradient(burlywood, gray);
     transition: 0.2s;
     height: 50px;
     margin: 5px;

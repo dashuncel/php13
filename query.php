@@ -48,16 +48,13 @@ switch ($typeQuery) {
         break;
 }
 
-var_dump($param);
-echo $query;
-
 // если есть промежуточный запрос - выполняем его:
 if (! empty($query)) {
     try {
         $statement = $pdo->prepare($query);
         $statement->execute($param);
     } catch (PDOException $e) {
-        echo "Ошибка обновления записи в БД: " . $e->getMessage() . '<br/>';
+        echo "Ошибка обновления записи ($query) в БД: " . $e->getMessage() . '<br/>';
         exit;
     }
 }
